@@ -23,16 +23,20 @@ while True:
     for (x, y, w, h) in face_coordinates:
         cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
 
+        # Get the sub frame (using numpy N-dimensional array slicing)
         the_face = frame[y:y+h: , x:x+w]
-        the_face = (x, y, w, h)
         
         # the code below is to make sure the smile detect the area of face only
         grayscaled_face = cv2.cvtColor(the_face, cv2.COLOR_BGR2GRAY)
 
-        smile_coordinates = smile_classifier.detectMultiScale(grayscaled_face, scaleFactor = 1.7, minNeighbors = 20)
+        smile_coordinates = smile_classifier.detectMultiScale(grayscaled_face, scaleFactor = 1.5, minNeighbors = 20)
         
-        for (x_, y_, w_, h_) in smile_coordinates:
-            cv2.rectangle(frame, (x_,y_), (x_+w_, y_+h_), (0, 0, 255), 2)
+        # Label this face as smiling
+        if len(smile_coordinates) > 0:
+            cv2.putText(frame,"smiling",(x, y+h+40), fontScale=3, fontFace=cv2.FONT_HERSHEY_PLAIN, color=(255,255,255))
+
+        # for (x_, y_, w_, h_) in smile_coordinates:
+        #     cv2.rectangle(the_face, (x_,y_), (x_+w_, y_+h_), (0, 0, 255), 2)
 
 
     # show the read result of webcam
