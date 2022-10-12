@@ -1,8 +1,10 @@
 import cv2
+from matplotlib.scale import scale_factory
 
 # include the classifier
 face_classifier = cv2.CascadeClassifier('../facedetector/haarcascade_frontalface_default.xml')
 smile_classifier = cv2.CascadeClassifier('haarcascade_smile.xml')
+eye_classifier = cv2.CascadeClassifier('haarcascade_eye.xml')
 
 # initialize the webcam / code 0 = webcam
 webcam = cv2.VideoCapture(0)
@@ -15,7 +17,7 @@ while True:
     grayscaled = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # detect them
-    face_coordinates = face_classifier.detectMultiScale(grayscaled)
+    face_coordinates = face_classifier.detectMultiScale(grayscaled, 1.5)
     #smile_coordinates = smile_classifier.detectMultiScale(grayscaled, scaleFactor = 1.7, minNeighbors = 20)
 
     # create rectangle when it is detected
@@ -28,14 +30,19 @@ while True:
         # the code below is to make sure the smile detect the area of face only
         grayscaled_face = cv2.cvtColor(the_face, cv2.COLOR_BGR2GRAY)
 
-        smile_coordinates = smile_classifier.detectMultiScale(grayscaled_face, scaleFactor = 1.5, minNeighbors = 20)
+        smile_coordinates = smile_classifier.detectMultiScale(grayscaled_face, scaleFactor = 1.7, minNeighbors = 60)
         
+        eyes = eye_classifier.detectMultiScale(grayscaled_face, scaleFactor = 1.7)
+
         # Label this face as smiling
         if len(smile_coordinates) > 0:
             cv2.putText(frame,"smiling",(x, y+h+40), fontScale=3, fontFace=cv2.FONT_HERSHEY_PLAIN, color=(255,255,255))
 
         # for (x_, y_, w_, h_) in smile_coordinates:
         #     cv2.rectangle(the_face, (x_,y_), (x_+w_, y_+h_), (0, 0, 255), 2)
+
+        for (x_, y_, w_, h_) in eyes:
+            cv2.rectangle(the_face, (x_,y_), (x_+w_, y_+h_), (255, 0, 0), 2)
 
 
     # show the read result of webcam
