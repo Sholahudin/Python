@@ -21,7 +21,7 @@ while True:
     #detect faces
     face_coordinates = trained_faced_data.detectMultiScale(grayscaled_img)
 
-    for (x, y, w, h) in face_coordinates: 
+    for (x, y, w, h) in face_coordinates:
         cv2.rectangle(frame, (x,y), (x+w, y+h),(0, 255, 0), 2)
 
     cv2.imshow('Clever Programmer Face Detector', frame)
